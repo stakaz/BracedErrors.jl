@@ -1,6 +1,6 @@
 name = "BracedErrors"
 uuid = "9ed09ac8-9d7d-11e8-2b43-c32252b07030"
-authors = ["Stanislav Kazmin <kazmin@mis.mpg.de>"]
+authors = ["Stanislav Kazmin <stas.kazmin@gmail.com>"]
 version = "0.1.0"
 
 [deps]
