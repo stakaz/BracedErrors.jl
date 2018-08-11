@@ -14,13 +14,14 @@ Providing a value `μ` and one or two errors `σ1` (`σ2`) it creates a string w
 
 This notation is commonly used in sciencific papers and this function provide an automated way of getting the appropriate string.
 
-# Parameters
+# Keyword Arguments
+- `dec::Int = 2`: number of decimals to round the errors to
 - `suff::String = ""`: optional suffix after the bracket
 - `suff2::String = ""`: optional suffix after the second bracket
 - `bracket::Symbol = :r`: type of the bracket
 - `bracket2::Symbol = :r`: type of the second bracket
 
-`brackat` and `bracket2` can take the values: $(keys(obracket)) which corespond to $(values(obracket)).
+`bracket` and `bracket2` can take the values: $(keys(obracket)) which correspond to $(values(obracket)).
 """
 function bracederror(μ::Real, σ1::Real, σ2::Real = 0.0; dec::Int = 2, suff::String = "", suff2::String = "", bracket::Symbol = :r, bracket2::Symbol = :r)
 	@assert σ1 > 0.0
