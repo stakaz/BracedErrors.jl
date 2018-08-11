@@ -8,6 +8,12 @@ This is a very simple but yet useful package which helps to generate strings wit
 
 This is common notation in science and this package provides a function to generate these strings.
 
+## Rounding
+
+The errors are always rounded with `ceil` while the value is rounded with `round`. This rule is a usual conservative case for rounding errors.
+
+By default the errors will have 2 digits in the brackets. See next section for more explanations.
+
 ## Usage
 
 There is only one function exported: `bracederror`.
