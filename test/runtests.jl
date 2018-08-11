@@ -1,15 +1,15 @@
 using Test
 using BracedErrors
 
-@testset "get_lg_int" begin
-@test get_lg_int(12345.45) == 4
-@test get_lg_int(1.023) == 0
-@test get_lg_int(1.3e-17) == -17
-@test get_lg_int(0.004) == -3
-@test get_lg_int(1.0) == 0
-@test_throws DomainError get_lg_int(-0.1)
-@test_throws InexactError get_lg_int(0.0)
-end
+# @testset "get_lg_int" begin
+# @test get_lg_int(12345.45) == 4
+# @test get_lg_int(1.023) == 0
+# @test get_lg_int(1.3e-17) == -17
+# @test get_lg_int(0.004) == -3
+# @test get_lg_int(1.0) == 0
+# @test_throws DomainError get_lg_int(-0.1)
+# @test_throws InexactError get_lg_int(0.0)
+# end
 
 @testset "str_err" begin
 	@testset "dec = 2" begin

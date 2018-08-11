@@ -1,6 +1,8 @@
 module BracedErrors
 using Formatting
 
+export bracederror
+
 get_lg_int(x) = Int(floor(log10(x)))
 
 obracket = Dict(:r => "(", :s => "[", :q => "{", :a => "<", :l => "|")
