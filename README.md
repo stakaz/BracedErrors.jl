@@ -15,25 +15,25 @@ The usage is explained in its docstring.
 
 ### Basic Usage
 
-```juliashell
-> bracederror(123.456, 0.123)
+```julia
+julia> bracederror(123.456, 0.123)
 "123.46(13)"
 
-> bracederror(123.456, 0.00123)
+julia> bracederror(123.456, 0.00123)
 "123.4560(13)"
 
-> bracederror(123.456, 123456)
+julia> bracederror(123.456, 123456)
 "123(123456)"
 ```
 
 ### Two errors
 You can provide two errors.
 
-```juliashell
-> bracederror(123.456, 123456, 0.0034)
+```julia
+julia> bracederror(123.456, 123456, 0.0034)
 "123.4560(1234560000)(34)"
 
-> bracederror(123.456, 0.123456, 0.0034)
+julia> bracederror(123.456, 0.123456, 0.0034)
 "123.4560(1235)(34)"
 ```
 
@@ -49,14 +49,14 @@ With some keywords you can customize the output.
 
 `bracket` and `bracket2` can take the values: `[:a, :l, :s, :r, :q]` which correspond to `["<", "|", "[", "(", "{"]`.
 
-```juliashell
-> bracederror(123.456, 0.123456, 0.0034; bracket=:s)
+```julia
+julia> bracederror(123.456, 0.123456, 0.0034; bracket=:s)
 "123.4560[1235](34)"
 
-> bracederror(123.456, 0.123456, 0.0034; suff2="_\\inf")
+julia> bracederror(123.456, 0.123456, 0.0034; suff2="_\\inf")
 "123.4560(1235)(34)_\\inf"
 
-> bracederror(123.456, 0.123456, 0.0034; dec=1)"123.456(124)(4)"
+julia> bracederror(123.456, 0.123456, 0.0034; dec=1)"123.456(124)(4)"
 ```
 
 ## Remarks
