@@ -1,0 +1,6 @@
+authors = ["Stanislav Kazmin <kazmin@mis.mpg.de>"]
+name = "BracedErrors"
+uuid = "9ed09ac8-9d7d-11e8-2b43-c32252b07030"
+version = "0.1.0"
+
+[deps]
