@@ -1,4 +1,4 @@
-# BracedErrors
+# BracedErrors.jl
 
 This package helps to automate the printing of values with errors in brackets.
 
