@@ -11,7 +11,7 @@ This is common notation in science and this package provides a function to gener
 ## Usage
 
 There is only one function exported: `bracederror`.
-The usage is explaned in its docstring.
+The usage is explained in its docstring.
 
 ### Basic Usage
 
@@ -27,7 +27,7 @@ The usage is explaned in its docstring.
 ```
 
 ### Two errors
-you can provide two errors.
+You can provide two errors.
 
 ```juliashell
 > bracederror(123.456, 123456, 0.0034)
@@ -48,3 +48,19 @@ With some keywords you can customize the output.
 - `bracket2::Symbol = :r`: type of the second bracket
 
 `bracket` and `bracket2` can take the values: `[:a, :l, :s, :r, :q]` which correspond to `["<", "|", "[", "(", "{"]`.
+
+```juliashell
+> bracederror(123.456, 0.123456, 0.0034; bracket=:s)
+"123.4560[1235](34)"
+
+> bracederror(123.456, 0.123456, 0.0034; suff2="_\\inf")
+"123.4560(1235)(34)_\\inf"
+
+> bracederror(123.456, 0.123456, 0.0034; dec=1)"123.456(124)(4)"
+```
+
+## Remarks
+
+I have written this package during the hackathon at juliacon 2018 and this is the first official package.
+I have tried to test it on different cases but it is still very early stage. Please use it with care and any help is welcome.
+
