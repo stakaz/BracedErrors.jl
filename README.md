@@ -63,6 +63,14 @@ With some keywords you can customize the output.
 
 `bracket` and `bracket2` can take the values: `[:a, :l, :s, :r, :c, :_, :^]` (angular, line, square, round, curly, subscript, superscript) which correspond to `["<>", "||", "[]", "()", "{}", "_{}", "^{}"]`.
 The last two are useful for LaTeX output.
+However, note that this is **not** a common way of printing the errors.
+In such cases one usually prints the real error like in this example:
+$$0.1234 \pm 0.056 \pm 0.12 = 1.234(56)(12) = 1.234_{\pm 0.056}^{\pm 0.012}$$
+and **not** $1.234_{56}^{12}$.
+But feel free to use it and annotate how to read it (it is the shortest one ;)).
+It is also possible that you use it for lower and upper error bound, where it makes much more sense and is common notation.
+
+$$ 0.1234 +0.056 -0.012 = 0.1234_{56}^{12}$$ 
 
 ```julia
 julia> bracederror(123.456, 0.123456, 0.0034; bracket=:s)
