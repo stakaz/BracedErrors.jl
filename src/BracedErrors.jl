@@ -57,7 +57,6 @@ end
 
 
 ### unexported due to common used symbol ±
-μ ± ε = bracederror(μ, ε)
 μ ± ε = bracederror(μ, ε...)
 ±(μ, ε...; kwargs...) = bracederror(μ, ε...; kwargs...)
 
