@@ -61,7 +61,8 @@ With some keywords you can customize the output.
 - `bracket::Symbol = :r`: type of the bracket
 - `bracket2::Symbol = :r`: type of the second bracket
 
-`bracket` and `bracket2` can take the values: `[:a, :l, :s, :r, :q]` which correspond to `["<", "|", "[", "(", "{"]`.
+`bracket` and `bracket2` can take the values: `[:a, :l, :s, :r, :c, :_, :^]` (angular, line, square, round, curly, subscript, superscript) which correspond to `["<>", "||", "[]", "()", "{}", "_{}", "^{}"]`.
+The last two are useful for LaTeX output.
 
 ```julia
 julia> bracederror(123.456, 0.123456, 0.0034; bracket=:s)
@@ -72,6 +73,22 @@ julia> bracederror(123.456, 0.123456, 0.0034; suff2="_\\inf")
 
 julia> bracederror(123.456, 0.123456, 0.0034; dec=1)"123.456(124)(4)"
 ```
+
+## Unexported $±$ Infix Operator
+
+Due to the fact that $\pm$ is often used as an operator `BracedErrors` by default does not export it. It is however defined and can be used by importing it like this:
+
+```julia
+julia> import BracedErrors: ±
+julia>0.234 ± 0.00056
+	"0.23400(56)"
+julia>0.234 ± (0.00056, 0.45)
+	"0.23400(56)(45000)"
+julia>±(0.234, 0.00056, 0.45; bracket2 =:s)
+	"0.23400(56)[45000]"
+```
+
+By using this infix operator you gain even more convenience in error printing in strings like `"$(val ± err)"` and so on.
 
 ## Remarks
 
