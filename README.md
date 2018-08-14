@@ -2,6 +2,8 @@
 
 This package helps to automate the printing of values with errors in brackets.
 
+[![Build Status](https://travis-ci.org/stakaz/BracedErrors.jl.svg?branch=master)](https://travis-ci.org/stakaz/BracedErrors.jl)
+
 ## Getting Started
 
 This is a very simple but yet useful package which helps to generate strings with values and their corresponding error followed in brackets, e. g., `23.56(12)(30)` stands for `23.56 ± 0.12 ± 0.30`.
