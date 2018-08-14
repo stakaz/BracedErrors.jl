@@ -9,12 +9,18 @@ This package helps to automate the printing of values with errors in brackets.
 This is a very simple but yet useful package which helps to generate strings with values and their corresponding error followed in brackets, e. g., `23.56(12)(30)` stands for `23.56 ± 0.12 ± 0.30`.
 
 This is common notation in science and this package provides a function to generate these strings.
+The reading is the following: the error denoted with $N$ digits describes the error in the last $N$ shown digits of the value. E. g., `0.345(56) = 0.345 ± 0.56` or `1234567890(123) = 1234567890 ± 123`.
 
 ## Rounding
 
 The errors are always rounded with `ceil` while the value is rounded with `round`. This rule is a usual conservative case for rounding errors.
 
 By default the errors will have 2 digits in the brackets. See next section for more explanations.
+
+## Accepted values
+
+This function is mainly written for float-like types as `Float64` and `BigFloat`.
+It works with `Int` as well but due to limitations of `sprintf1(::String, ::BigInt)` it does on partially work on `BigInt`.
 
 ## Usage
 

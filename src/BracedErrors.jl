@@ -55,5 +55,11 @@ function bracederror(μ::Real, σ1::Real, σ2::Real = 0.0; dec::Int = 2, suff::S
 	return "$val$σ1_str$σ2_str"
 end
 
+
+### unexported due to common used symbol ±
+μ ± ε = bracederror(μ, ε)
+μ ± ε = bracederror(μ, ε...)
+±(μ, ε...; kwargs...) = bracederror(μ, ε...; kwargs...)
+
 end # BracedErrors
 

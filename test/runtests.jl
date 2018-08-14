@@ -1,15 +1,6 @@
 using Test
 using BracedErrors
-
-# @testset "get_lg_int" begin
-# @test get_lg_int(12345.45) == 4
-# @test get_lg_int(1.023) == 0
-# @test get_lg_int(1.3e-17) == -17
-# @test get_lg_int(0.004) == -3
-# @test get_lg_int(1.0) == 0
-# @test_throws DomainError get_lg_int(-0.1)
-# @test_throws InexactError get_lg_int(0.0)
-# end
+import BracedErrors: ±
 
 @testset "bracederror" begin
 	@testset "dec = 2" begin
@@ -68,5 +59,19 @@ using BracedErrors
 		@test bracederror(123.456, 0.345; bracket = :q) == "123.46{35}"
 		@test bracederror(123.456, 0.345; bracket = :a) == "123.46<35>"
 		@test bracederror(123.456, 0.345; suff = "_\\inf") == "123.46(35)_\\inf"
+	end
+
+	@testset "big float and int" begin
+		@test bracederror(big"123456789123456789123456789.34567", big"0.0008412345") == "123456789123456789123456789.34567(85)"
+		@test bracederror(big"123456789123456789123456789.34567", big"0.0008412345", 0.12) == "123456789123456789123456789.34567(85)(12000)"
+		@test bracederror(big"123456789012345678901234567890", big"1234567890") == "1.234567890123456789012e+29(13)"
+		@test bracederror(big"123456789012345678901234567890", big"1234567890", big"12345") == "1.23456789012345678901234568e+29(1234568)(13)"
+		@test bracederror(big"123456789012345678901234567890.0", big"1234.0", big"0.0000098") == "123456789012345678901234567890.0000000(12340000001)(99)"
+	end
+
+	@testset "± infix operator" begin
+		@test 0.234 ± 0.00056 == "0.23400(56)"
+		@test 0.234 ± (0.00056, 0.45) == "0.23400(56)(45000)"
+		@test ±(0.234, 0.00056, 0.45; bracket2 =:s) == "0.23400(56)[45000]"
 	end
 end
