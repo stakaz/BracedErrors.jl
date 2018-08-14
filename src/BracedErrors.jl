@@ -5,8 +5,8 @@ export bracederror
 
 get_lg_int(x) = Int(floor(log10(x)))
 
-obracket = Dict(:r => "(", :s => "[", :q => "{", :a => "<", :l => "|")
-cbracket = Dict(:r => ")", :s => "]", :q => "}", :a => ">", :l => "|")
+obracket = Dict(:r => "(", :s => "[", :q => "{", :a => "<", :l => "|", :^ => "^{", :_ => "_{")
+cbracket = Dict(:r => ")", :s => "]", :q => "}", :a => ">", :l => "|", :^ => "}", :_ => "}")
 
 """
 		bracederror(μ::Real, σ1::Real, σ2::Real = 0.0; dec::Int = 2, suff::String = "", suff2::String = "", bracket::Symbol = :r, bracket2::Symbol = :r)
