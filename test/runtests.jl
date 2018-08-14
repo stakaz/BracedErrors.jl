@@ -75,10 +75,3 @@ import BracedErrors: ±
 		@test ±(0.234, 0.00056, 0.45; bracket2 =:s) == "0.23400(56)[45000]"
 	end
 end
-
-# μ ± ε = bracederror(μ, ε...)
-# ±(μ, ε...; kwargs...) = bracederror(μ, ε...; kwargs...)
-#
-# 0.234 ± 0.056
-# 0.234 ± (0.056, 12345.0)
-# ±(0.234, 0.00056, 0.45; bracket2 =:s)
