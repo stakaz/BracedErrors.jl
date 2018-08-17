@@ -9,6 +9,12 @@ import BracedErrors: ±
 		@test bracederror(123.456, 0.00012345) == "123.45600(13)"
 	end
 
+	@testset "negative" begin
+		@test bracederror(-123.456, 0.12345) == "-123.46(13)"
+		@test bracederror(-123.456, 0.0012345) == "-123.4560(13)"
+		@test bracederror(-123.456, 340.00012345) == "-123(341)"
+	end
+
 	@testset "dec = 3" begin
 		@test bracederror(123.456, 0.12345; dec=3) == "123.456(124)"
 		@test bracederror(123.456, 0.0012345; dec=3) == "123.45600(124)"
