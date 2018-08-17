@@ -3,7 +3,7 @@ using Formatting
 
 export bracederror
 
-get_lg_int(x) = Int(floor(log10(x)))
+get_lg_int(x) = Int(floor(log10(abs(x))))
 
 obracket = Dict(:r => "(", :s => "[", :q => "{", :a => "<", :l => "|", :^ => "^{", :_ => "_{")
 cbracket = Dict(:r => ")", :s => "]", :q => "}", :a => ">", :l => "|", :^ => "}", :_ => "}")
