@@ -1,5 +1,4 @@
 module BracedErrors
-using Formatting
 using Decimals
 
 export bracederror
