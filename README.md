@@ -19,8 +19,7 @@ By default the errors will have 2 digits in the brackets. See next section for m
 
 ## Accepted values
 
-This function is mainly written for float-like types as `Float64` and `BigFloat`.
-It works with `Int` as well but due to limitations of `sprintf1(::String, ::BigInt)` it does on partially work on `BigInt`.
+This function is mainly written for float-like types as `Float64`.
 
 ## Usage
 
@@ -37,18 +36,20 @@ julia> bracederror(123.456, 0.00123)
 "123.4560(13)"
 
 julia> bracederror(123.456, 123456)
-"123(123456)"
+"123(130000)"
 ```
 
 ### Two errors
-You can provide two errors.
-
+You can provide two or more errors.
 ```julia
 julia> bracederror(123.456, 123456, 0.0034)
-"123.4560(1234560000)(34)"
+"123.4560(1300000000)(34)"
 
 julia> bracederror(123.456, 0.123456, 0.0034)
-"123.4560(1235)(34)"
+"123.4560(1300)(34)"
+
+julia> bracederror(1.23456, 0.1, 0.23, 0.45, 0.56)
+"1.23(10)(23)(45)(57)"
 ```
 
 ## Customize Output
@@ -56,12 +57,10 @@ julia> bracederror(123.456, 0.123456, 0.0034)
 With some keywords you can customize the output.
 
 - `dec::Int = 2`: number of decimals to round the errors to
-- `suff::String = ""`: optional suffix after the bracket
-- `suff2::String = ""`: optional suffix after the second bracket
-- `bracket::Symbol = :r`: type of the bracket
-- `bracket2::Symbol = :r`: type of the second bracket
+- `suff::NTuple{String} = ("", ...)`: optional suffix after the brackets (Tuple can be omitted when using with only one error)
+- `bracket::NTuple{Symbol} = (:r, ...)`: type of the brackets (Tuple can be omitted when using with only one error)
 
-`bracket` and `bracket2` can take the values: `[:a, :l, :s, :r, :c, :_, :^]` (angular, line, square, round, curly, subscript, superscript) which correspond to `["<>", "||", "[]", "()", "{}", "_{}", "^{}"]`.
+`bracket` can take the values: `[:a, :l, :s, :r, :c, :_, :^]` (angular, line, square, round, curly, subscript, superscript) which correspond to `["<>", "||", "[]", "()", "{}", "_{}", "^{}"]`.
 The last two are useful for LaTeX output.
 However, note that this is **not** a common way of printing the errors.
 In such cases one usually prints the real error like in this example:
@@ -70,16 +69,16 @@ and **not** $1.234_{56}^{12}$.
 But feel free to use it and annotate how to read it (it is the shortest one ;)).
 It is also possible that you use it for lower and upper error bound, where it makes much more sense and is common notation.
 
-$$ 0.1234 +0.056 -0.012 = 0.1234_{56}^{12}$$ 
+$$ 0.1234 +0.056 -0.012 = 0.1234_{56}^{12}$$
 
 ```julia
 julia> bracederror(123.456, 0.123456, 0.0034; bracket=:s)
-"123.4560[1235](34)"
+"123.4560[1300](34)"
 
 julia> bracederror(123.456, 0.123456, 0.0034; suff2="_\\inf")
-"123.4560(1235)(34)_\\inf"
+"123.4560(1300)(34)_\\inf"
 
-julia> bracederror(123.456, 0.123456, 0.0034; dec=1)"123.456(124)(4)"
+julia> bracederror(123.456, 0.123456, 0.0034; dec=1)"123.456(200)(4)"
 ```
 
 ## Unexported $±$ Infix Operator
@@ -92,7 +91,7 @@ julia>0.234 ± 0.00056
 	"0.23400(56)"
 julia>0.234 ± (0.00056, 0.45)
 	"0.23400(56)(45000)"
-julia>±(0.234, 0.00056, 0.45; bracket2 =:s)
+julia>±(0.234, 0.00056, 0.45; bracket =(:r,:s))
 	"0.23400(56)[45000]"
 ```
 
