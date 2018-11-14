@@ -1,59 +1,79 @@
 module BracedErrors
 using Formatting
+using Decimals
 
 export bracederror
 
-get_lg_int(x) = Int(floor(log10(abs(x))))
+function sigdig(d::Decimal, dig::Int = 2)
+	s = string(d.c)
+	length(s) + d.q - dig
+end
+
+function getdig(d::Decimal, i::Int)
+	s = string(d.c)
+	ind = -i + length(s) + d.q
+	if 1 ≤ ind ≤ length(s)
+		s[ind]
+	elseif  ind > length(s)
+		"0"
+	elseif i ≤ 0
+		"0"
+	else
+		""
+	end
+end
+
+getdig(d::Decimal, i; delim = ".") = string(getdig.(d, i[i.≥0])..., delim, getdig.(d, i[i.<0])...)
+
+function get_val_str(d::Decimal, dig::Integer; delim = ".")
+
+	i = max(0, length(string(d.c)) + d.q - 1):-1:min(0, dig)
+	r = string(getdig.(d, i[i.≥0])...)
+	if length(i[i.<0]) > 0
+		r *= delim * string(getdig.(d, i[i.<0])...)
+	end
+	return r
+end
+
+get_err_str(d::Decimal, dig::Integer) = string(getdig.(d, (length(string(d.c)) + d.q - 1):-1:min(dig,0))...)
 
 obracket = Dict(:r => "(", :s => "[", :q => "{", :a => "<", :l => "|", :^ => "^{", :_ => "_{")
 cbracket = Dict(:r => ")", :s => "]", :q => "}", :a => ">", :l => "|", :^ => "}", :_ => "}")
 
 """
-		bracederror(μ::Real, σ1::Real, σ2::Real = 0.0; dec::Int = 2, suff::String = "", suff2::String = "", bracket::Symbol = :r, bracket2::Symbol = :r)
-Providing a value `μ` and one or two errors `σ1` (`σ2`) it creates a string with the values followed by the errors in brackets.
+bracederror(μ::Real, σ::NTuple{N,Real}; dec::Int = 2, suff::NTuple{N,String} = ntuple(i->"", N), bracket::NTuple{N,Symbol} = ntuple(i->:r, N))
+Providing a value `μ` and a tuple of errors `σ` it creates a string with the value followed by the errors in brackets.
 
 This notation is commonly used in sciencific papers and this function provide an automated way of getting the appropriate string.
-
 # Keyword Arguments
 - `dec::Int = 2`: number of decimals to round the errors to
-- `suff::String = ""`: optional suffix after the bracket
-- `suff2::String = ""`: optional suffix after the second bracket
-- `bracket::Symbol = :r`: type of the bracket
-- `bracket2::Symbol = :r`: type of the second bracket
+- `suff::NTuple{AbstractString} = ("",)`: optional suffix after the brackets
+- `bracket::NTuple{Symbol} = :r`: type of the brackets
+- `delim = "."`: the delimeter string
+`bracket` can take the values: $(keys(obracket)) which correspond to $(values(obracket)).
 
-`bracket` and `bracket2` can take the values: $(keys(obracket)) which correspond to $(values(obracket)).
+For conviniece following method are also added:
+`bracederror(μ::Real, σ::Real; dec::Int = 2, suff::String = "", bracket::Symbol = :r, kwargs...)`
+`bracederror(μ::Real, σ::Real...; dec::Int = 2, suff = ntuple(i->"",length(σ)), bracket = ntuple(i->:r, length(σ)), kwargs...)`
 """
-function bracederror(μ::Real, σ1::Real, σ2::Real = 0.0; dec::Int = 2, suff::String = "", suff2::String = "", bracket::Symbol = :r, bracket2::Symbol = :r)
-	@assert σ1 > 0.0
-	@assert σ2 ≥ 0.0 ## 0.0 means no error => it will be skipped
+function bracederror(μ::Real, σ::NTuple{N,Real}; dec::Int = 2, suff::NTuple{N,AbstractString} = ntuple(i->"", N), bracket::NTuple{N,Symbol} = ntuple(i->:r, N), delim::AbstractString = ".") where N
 
-	### get the log10 power
-	μdig = get_lg_int(μ)
-	σ1dig = get_lg_int(σ1)
-	σ2dig = σ2 ≠ 0.0 ? get_lg_int(σ2) : typemax(Int)
+	dμ = decimal(μ)
+	dσ = decimal.(round.(σ, RoundUp, sigdigits = dec))
 
-	### get the log10 power of the smaller error
-	σdig = min(σ1dig, σ2dig)
+	dig = min(sigdig(dμ, dec), sigdig.(dσ, dec)...)
 
-	if μdig > σdig ## order of the errors smaller than order of value
-		sig = μdig - σdig + dec
-		σ1_int = Int(ceil(σ1 / 10.0^(σdig-dec+1)))
-		σ2 ≠ 0.0 && (σ2_int = Int(ceil(σ2 / 10.0^(σdig-dec+1))))
-		if μdig == sig - 1
-			val = sprintf1("%.$(sig)g", μ)
-		else
-			val = sprintf1("%#.$(sig)g", μ)
-		end
-	else ## order of the errors larger than order of value
-		σ1_int = Int(ceil(σ1))
-		σ2 ≠ 0.0 && (σ2_int = Int(ceil(σ2)))
-		val = sprintf1("%d", μ)
+	r = dμ.s == 0 ? "" : "-"
+	r *= get_val_str(decimal(round(μ, digits = max(0,-dig))), dig; delim = delim)
+	for i ∈ 1:length(dσ)
+		r *= obracket[bracket[i]] * get_err_str(dσ[i], dig) * cbracket[bracket[i]] * suff[i]
 	end
-	### prepare output
-	σ2_str = σ2 == 0.0 ? "" : "$(obracket[bracket2])$(σ2_int)$(cbracket[bracket2])$(suff2)"
-	σ1_str =  "$(obracket[bracket])$(σ1_int)$(cbracket[bracket])$(suff)"
-	return "$val$σ1_str$σ2_str"
+
+	return r
 end
+
+bracederror(μ::Real, σ::Real; dec::Int = 2, suff::String = "", bracket::Symbol = :r, kwargs...) = bracederror(μ, (σ,); dec = dec, suff = (suff,), bracket = (bracket,), kwargs...)
+bracederror(μ::Real, σ::Real...; dec::Int = 2, suff = ntuple(i->"",length(σ)), bracket = ntuple(i->:r, length(σ)), kwargs...) = bracederror(μ, σ; dec = dec, suff = suff, bracket = bracket, kwargs...)
 
 
 ### unexported due to common used symbol ±
