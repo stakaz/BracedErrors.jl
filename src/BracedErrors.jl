@@ -3,12 +3,12 @@ using Decimals
 
 export bracederror
 
-function sigdig(d::Decimal, dig::Int = 2)
+function sigdig(d::Decimal, dig::Integer = 2)
 	s = string(d.c)
 	length(s) + d.q - dig
 end
 
-function getdig(d::Decimal, i::Int)
+function getdig(d::Decimal, i::Integer)
 	s = string(d.c)
 	ind = -i + length(s) + d.q
 	if 1 ≤ ind ≤ length(s)
@@ -21,8 +21,6 @@ function getdig(d::Decimal, i::Int)
 		""
 	end
 end
-
-getdig(d::Decimal, i; delim = ".") = string(getdig.(d, i[i.≥0])..., delim, getdig.(d, i[i.<0])...)
 
 function get_val_str(d::Decimal, dig::Integer; delim = ".")
 
