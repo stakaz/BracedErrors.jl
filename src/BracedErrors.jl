@@ -34,9 +34,6 @@ end
 
 get_err_str(d::Decimal, dig::Integer) = string(getdig.(d, (length(string(d.c)) + d.q - 1):-1:min(dig,0))...)
 
-obracket = Dict(:r => "(", :s => "[", :q => "{", :a => "<", :l => "|", :^ => "^{", :_ => "_{")
-cbracket = Dict(:r => ")", :s => "]", :q => "}", :a => ">", :l => "|", :^ => "}", :_ => "}")
-
 """
 bracederror(μ::Real, σ::NTuple{N,Real}; dec::Int = 2, suff::NTuple{N,String} = ntuple(i->"", N), bracket::NTuple{N,Symbol} = ntuple(i->:r, N))
 Providing a value `μ` and a tuple of errors `σ` it creates a string with the value followed by the errors in brackets.
@@ -47,14 +44,23 @@ This notation is commonly used in sciencific papers and this function provide an
 - `suff::NTuple{AbstractString} = ("",)`: optional suffix after the brackets
 - `bracket::NTuple{Symbol} = :r`: type of the brackets
 - `delim = "."`: the delimeter string
+- `latex = false`: escape characters and use latex commands if necessary
 `bracket` can take the values: $(keys(obracket)) which correspond to $(values(obracket)).
 
 For conviniece following method are also added:
 `bracederror(μ::Real, σ::Real; dec::Int = 2, suff::String = "", bracket::Symbol = :r, kwargs...)`
 `bracederror(μ::Real, σ::Real...; dec::Int = 2, suff = ntuple(i->"",length(σ)), bracket = ntuple(i->:r, length(σ)), kwargs...)`
 """
-function bracederror(μ::Real, σ::NTuple{N,Real}; dec::Int = 2, suff::NTuple{N,AbstractString} = ntuple(i->"", N), bracket::NTuple{N,Symbol} = ntuple(i->:r, N), delim::AbstractString = ".") where N
+function bracederror(μ::Real, σ::NTuple{N,Real}; dec::Int = 2, suff::NTuple{N,AbstractString} = ntuple(i->"", N), bracket::NTuple{N,Symbol} = ntuple(i->:r, N), delim::AbstractString = ".", latex = false) where N
 
+	if !latex
+		obracket = Dict(:r => "(", :s => "[", :q => "{", :a => "<", :l => "|", :^ => "^{", :_ => "_{")
+		cbracket = Dict(:r => ")", :s => "]", :q => "}", :a => ">", :l => "|", :^ => "}", :_ => "}")
+	else
+		obracket = Dict(:r => "(", :s => "[", :q => "\\{", :a => "\\langle", :l => "|", :^ => "^{", :_ => "_{")
+		cbracket = Dict(:r => ")", :s => "]", :q => "\\}", :a => "\\rangle", :l => "|", :^ => "}", :_ => "}")
+	end
+	
 	dμ = decimal(μ)
 	dσ = decimal.(round.(σ, RoundUp, sigdigits = dec))
 
